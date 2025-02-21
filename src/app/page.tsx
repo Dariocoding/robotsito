@@ -1,11 +1,15 @@
 "use client";
-import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex justify-center items-center h-screen bg-black relative before:opacity-50 before:bg-black before:absolute before:inset-0 before:bg-[url('/b1fcd2efc378c391fe923c26171a320c.jpg')] before:bg-cover before:bg-center before:bg-no-repeat">
+    <main className="flex justify-center items-center h-screen bg-black relative before:opacity-50 before:bg-black before:absolute before:inset-0 before:bg-[url('/bg.jpeg')] before:bg-cover before:bg-center before:bg-no-repeat">
       <div className="p-4">
         <div className="relative w-80 bg-white rounded-[25px] shadow-xl flex flex-col items-center p-5">
+          <img
+            src="/logo.jpeg"
+            alt="Logo"
+            className="w-20 h-20 mb-4 rounded-lg"
+          />
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
             Robot de Asistencia
           </h1>
