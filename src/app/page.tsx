@@ -1,8 +1,98 @@
 "use client";
 
+import React, { useEffect, useState, useRef } from "react";
+
 export default function Home() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
+  const buttonAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Inicializar los audios en el lado del cliente
+  useEffect(() => {
+    backgroundAudioRef.current = new Audio("/emergency-alert2.wav");
+    buttonAudioRef.current = new Audio("/button-click.wav");
+  }, []);
+
+  // Función para el sonido de botones
+  const playButtonSound = () => {
+    if (!buttonAudioRef.current) return;
+
+    // Clonar el audio para permitir múltiples reproducciones simultáneas
+    const audioClone = buttonAudioRef.current.cloneNode() as HTMLAudioElement;
+    audioClone.play().catch((error) => {
+      console.log("Error reproduciendo sonido del botón:", error);
+    });
+  };
+
+  // Función para controlar el sonido de fondo
+  const toggleBackgroundSound = () => {
+    if (!backgroundAudioRef.current) return;
+
+    if (isPlaying) {
+      backgroundAudioRef.current.pause();
+      backgroundAudioRef.current.currentTime = 0;
+    } else {
+      backgroundAudioRef.current.loop = true;
+      backgroundAudioRef.current.play().catch((error) => {
+        console.log("Error reproduciendo sonido de fondo:", error);
+      });
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  // Limpieza cuando el componente se desmonte
+  useEffect(() => {
+    return () => {
+      if (backgroundAudioRef.current) {
+        backgroundAudioRef.current.pause();
+        backgroundAudioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
   return (
     <main className="flex justify-center items-center h-screen bg-black relative before:opacity-50 before:bg-black before:absolute before:inset-0 before:bg-[url('/bg.jpeg')] before:bg-cover before:bg-center before:bg-no-repeat">
+      {/* Agregar botón flotante para el sonido */}
+      <button
+        onClick={toggleBackgroundSound}
+        className="fixed top-4 right-4 z-50 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-3 shadow-lg transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        title={
+          isPlaying ? "Desactivar sonido de alerta" : "Activar sonido de alerta"
+        }
+      >
+        {isPlaying ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-blue-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"
+            />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-red-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"
+            />
+          </svg>
+        )}
+      </button>
+
       <div className="p-4">
         <div className="relative w-80 bg-white rounded-[25px] shadow-xl flex flex-col items-center p-5">
           <img
@@ -26,15 +116,15 @@ export default function Home() {
               xmlSpace="preserve"
             >
               <path
-                style={{ fill: "#f97906" }}
+                style={{ fill: "#e0e0e0" }}
                 d="M456,496.4v-57.6c0-44-35.2-78.4-79.2-78.4H119.2c-44,0-79.2,33.6-79.2,78.4v57.6H456z"
               />
               <polyline
-                style={{ fill: "#e57200" }}
+                style={{ fill: "#d0d0d0" }}
                 points="40,440.4 40,496.4 456,496.4 456,440.4 "
               />
               <ellipse
-                style={{ fill: "#f4ba38" }}
+                style={{ fill: "#f0f0f0" }}
                 cx={248}
                 cy="374.8"
                 rx="59.2"
@@ -50,58 +140,40 @@ c34.4,0,62.4,28,62.4,62.4V356.4z"
                 d="M248.8,261.2L248.8,261.2c34.4,0,63.2,28,63.2,62.4v33.6c0,34.4-28,60-62.4,60l0,0"
               />
               <path
-                style={{ fill: "#ffcc4d" }}
+                style={{ fill: "#e0e0e0" }}
                 d="M112,68.4c0,2.4-1.6,4-4,4l0,0c-2.4,0-4-1.6-4-4v-64c0-2.4,1.6-4,4-4l0,0c2.4,0,4,1.6,4,4V68.4z"
               />
               <path
-                style={{ fill: "#f4ba38" }}
+                style={{ fill: "#d0d0d0" }}
                 d="M108,0.4L108,0.4c3.2,0,4,0.8,4,4v58.4c0,3.2-1.6,4.8-4.8,4.8l0,0"
               />
               <rect
                 x={96}
                 y="56.4"
-                style={{ fill: "#f29130" }}
+                style={{ fill: "#e0e0e0" }}
                 width={24}
                 height={32}
               />
               <polyline
-                style={{ fill: "#f97906" }}
+                style={{ fill: "#d0d0d0" }}
                 points="96,56.4 120,56.4 120,88.4 "
               />
               <path
-                style={{ fill: "#0b6382" }}
-                d="M136,135.6c0,9.6-7.2,16.8-16.8,16.8H96.8c-9.6,0-16.8-7.2-16.8-16.8V97.2c0-9.6,7.2-16.8,16.8-16.8
-h22.4c9.6,0,16.8,7.2,16.8,16.8V135.6z"
-              />
-              <path
-                style={{ fill: "#00233f" }}
-                d="M96,80.4h23.2c9.6,0,16.8,7.2,16.8,16.8V134c0,9.6-8.8,18.4-17.6,18.4H96"
-              />
-              <path
-                style={{ fill: "#0b6382" }}
-                d="M408,135.6c0,9.6-7.2,16.8-16.8,16.8h-22.4c-9.6,0-16.8-7.2-16.8-16.8V97.2c0-9.6,7.2-16.8,16.8-16.8
-h22.4c9.6,0,16.8,7.2,16.8,16.8V135.6z"
-              />
-              <path
-                style={{ fill: "#00233f" }}
-                d="M376,80.4h16c9.6,0,16,8,16,17.6v36c0,9.6-6.4,18.4-16,18.4h-16"
-              />
-              <path
-                style={{ fill: "#f97906" }}
+                style={{ fill: "#808080" }}
                 d="M496,240.4c0,44.8-19.2,80-64,80H64c-44.8,0-64-34.4-64-80v-65.6C0,130,35.2,96.4,80.8,96.4H416
 c44.8,0,80.8,33.6,80.8,79.2v64.8H496z"
               />
               <path
-                style={{ fill: "#f29130" }}
+                style={{ fill: "#d0d0d0" }}
                 d="M496,240.4c0,44.8-19.2,80-64,80H64c-44.8,0-64-34.4-64-80v-65.6C0,130,35.2,96.4,80.8,96.4H416
 c44.8,0,80.8,33.6,80.8,79.2v64.8H496z"
               />
               <path
-                style={{ fill: "#f97906" }}
+                style={{ fill: "#c0c0c0" }}
                 d="M496,176.4v64c0,44.8-19.2,80-64,80H64c-44.8,0-64-34.4-64-80v-64"
               />
               <path
-                style={{ fill: "#e57200" }}
+                style={{ fill: "#b0b0b0" }}
                 d="M496,239.6c0,44.8-19.2,80.8-64,80.8H64c-44.8,0-64-36-64-81.6"
               />
               <circle style={{ fill: "#0b6382" }} cx={108} cy={206} r="81.6" />
@@ -397,7 +469,10 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
           <div className="mt-5 flex flex-col gap-3 w-full">
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
-              onClick={() => (window.location.href = "tel:911")}
+              onClick={() => {
+                playButtonSound();
+                window.location.href = "tel:911";
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -414,13 +489,35 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
               Llamar a Bomberos
             </button>
             <button
+              className="bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
+              onClick={() => {
+                playButtonSound();
+                window.location.href = "tel:131";
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Llamar a Ambulancia
+            </button>
+            <button
               className="bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
-              onClick={() =>
+              onClick={() => {
+                playButtonSound();
                 window.open(
                   "https://www.google.com/maps/search/hospital",
                   "_blank"
-                )
-              }
+                );
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -438,12 +535,13 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
             </button>
             <button
               className="bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
-              onClick={() =>
+              onClick={() => {
+                playButtonSound();
                 window.open(
                   "https://www.google.com/maps/search/bombero",
                   "_blank"
-                )
-              }
+                );
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -461,12 +559,13 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
             </button>
             <button
               className="bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
-              onClick={() =>
+              onClick={() => {
+                playButtonSound();
                 window.open(
                   "https://www.youtube.com/results?search_query=primeros+auxilios",
                   "_blank"
-                )
-              }
+                );
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
