@@ -22,7 +22,9 @@ export default function Home() {
   }, []);
 
   // Función para reproducir sonido específico
-  const playSpecificSound = (audioRef: React.RefObject<HTMLAudioElement>) => {
+  const playSpecificSound = (
+    audioRef: React.RefObject<HTMLAudioElement | null>
+  ) => {
     if (!audioRef.current) return;
 
     const audioClone = audioRef.current.cloneNode() as HTMLAudioElement;
