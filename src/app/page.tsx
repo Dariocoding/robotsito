@@ -6,21 +6,28 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
   const buttonAudioRef = useRef<HTMLAudioElement | null>(null);
+  const ambulanciaAudioRef = useRef<HTMLAudioElement | null>(null);
+  const bomberosAudioRef = useRef<HTMLAudioElement | null>(null);
+  const hospitalesAudioRef = useRef<HTMLAudioElement | null>(null);
+  const primerosAuxiliosAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Inicializar los audios en el lado del cliente
   useEffect(() => {
     backgroundAudioRef.current = new Audio("/emergency-alert2.wav");
     buttonAudioRef.current = new Audio("/button-click.wav");
+    ambulanciaAudioRef.current = new Audio("/llamar a ambulancia .mp3");
+    bomberosAudioRef.current = new Audio("/llamar a bomberos.mp3");
+    hospitalesAudioRef.current = new Audio("/buscar hospitales cercanos .mp3");
+    primerosAuxiliosAudioRef.current = new Audio("/ver primeros auxilios .mp3");
   }, []);
 
-  // Función para el sonido de botones
-  const playButtonSound = () => {
-    if (!buttonAudioRef.current) return;
+  // Función para reproducir sonido específico
+  const playSpecificSound = (audioRef: React.RefObject<HTMLAudioElement>) => {
+    if (!audioRef.current) return;
 
-    // Clonar el audio para permitir múltiples reproducciones simultáneas
-    const audioClone = buttonAudioRef.current.cloneNode() as HTMLAudioElement;
+    const audioClone = audioRef.current.cloneNode() as HTMLAudioElement;
     audioClone.play().catch((error) => {
-      console.log("Error reproduciendo sonido del botón:", error);
+      console.log("Error reproduciendo sonido:", error);
     });
   };
 
@@ -470,7 +477,7 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
               onClick={() => {
-                playButtonSound();
+                playSpecificSound(bomberosAudioRef);
                 window.location.href = "tel:911";
               }}
             >
@@ -491,7 +498,7 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
             <button
               className="bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
               onClick={() => {
-                playButtonSound();
+                playSpecificSound(ambulanciaAudioRef);
                 window.location.href = "tel:131";
               }}
             >
@@ -512,7 +519,7 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
             <button
               className="bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
               onClick={() => {
-                playButtonSound();
+                playSpecificSound(hospitalesAudioRef);
                 window.open(
                   "https://www.google.com/maps/search/hospital",
                   "_blank"
@@ -536,31 +543,7 @@ c0.8,0,2.4,0.8,2.4,2.4V240.4z"
             <button
               className="bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
               onClick={() => {
-                playButtonSound();
-                window.open(
-                  "https://www.google.com/maps/search/bombero",
-                  "_blank"
-                );
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Buscar Bomberos Cercanos
-            </button>
-            <button
-              className="bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg w-full flex items-center justify-center gap-2 transition-colors"
-              onClick={() => {
-                playButtonSound();
+                playSpecificSound(primerosAuxiliosAudioRef);
                 window.open(
                   "https://www.youtube.com/results?search_query=primeros+auxilios",
                   "_blank"
